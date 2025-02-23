@@ -1,32 +1,127 @@
-export default function VideoApp() {
-  return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
-      <h1 className="text-2xl font-bold mb-4">Live Stream</h1>
-      <video controls autoPlay className="w-full max-w-3xl rounded-lg shadow-lg">
-        <source src="https://jcevents.jiocinema.com:443/bpk-tv/JC_Sports18_1HD/JCHLS/hdntl=exp=1740379322~acl=%2f*~id=aaf549ec51984c86b32dd7de3e1334c7~data=hdntl~hmac=6cac47ef5a1d17cfe6e7e05f89a9d7c67318bc114fed4c4c800feeb11814ec63/JC_Sports18_1HD-audio_108038_eng=108000-video=1275600.m3u8" type="application/x-mpegURL" />
-        Your browser does not support HLS playback.
-      </video>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Match</title>
+    
+    <!-- HLS.js for streaming support -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-      {/* Popup */}
-      <div id="popup" className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white text-black p-6 rounded-lg shadow-lg text-center">
-          <p className="text-lg font-semibold mb-4">Join @TheDealsMaster on Telegram</p>
-          <div className="flex justify-center gap-4">
-            <button
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-              onClick={() => window.location.href = "https://t.me/+owl9BPBR425hMzA1"}
-            >
-              OK
-            </button>
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-              onClick={() => document.getElementById('popup').style.display = 'none'}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
+    <style>
+        /* General page styling */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Video player container */
+        #video-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        video {
+            width: 100%;
+            border: 2px solid white;
+            border-radius: 10px;
+        }
+
+        /* Popup styling */
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            text-align: center;
+            z-index: 999;
+            display: none;
+        }
+
+        #popup p {
+            color: black;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        #popup button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        #joinBtn {
+            background-color: green;
+            color: white;
+        }
+
+        #cancelBtn {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video Player Container -->
+    <div id="video-container">
+        <video id="video" controls autoplay></video>
     </div>
-  );
-}
+
+    <!-- Popup Message -->
+    <div id="popup">
+        <p>Join @TheDealsMaster on Telegram</p>
+        <button id="joinBtn">OK</button>
+        <button id="cancelBtn">Cancel</button>
+    </div>
+
+    <script>
+        // Show popup on page load
+        window.onload = function() {
+            document.getElementById("popup").style.display = "block";
+
+            // Handle popup buttons
+            document.getElementById("joinBtn").onclick = function() {
+                window.location.href = "https://t.me/+owl9BPBR425hMzA1";
+            };
+            document.getElementById("cancelBtn").onclick = function() {
+                document.getElementById("popup").style.display = "none";
+            };
+
+            // Video streaming setup
+            var video = document.getElementById('video');
+            var videoSrc = "https://jcevents.jiocinema.com:443/bpk-tv/JC_Sports18_1HD/JCHLS/hdntl=exp=1740379322~acl=%2f*~id=aaf549ec51984c86b32dd7de3e1334c7~data=hdntl~hmac=6cac47ef5a1d17cfe6e7e05f89a9d7c67318bc114fed4c4c800feeb11814ec63/JC_Sports18_1HD-audio_108038_eng=108000-video=1275600.m3u8";
+
+            if (Hls.isSupported()) {
+                var hls = new Hls();
+                hls.loadSource(videoSrc);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play();
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', function() {
+                    video.play();
+                });
+            }
+        };
+    </script>
+
+</body>
+</html>
