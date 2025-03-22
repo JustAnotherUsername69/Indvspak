@@ -4,124 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Match</title>
-    
-    <!-- HLS.js for streaming support -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
     <style>
-        /* General page styling */
         body {
             margin: 0;
-            padding: 0;
-            background-color: black;
+            font-family: Arial, sans-serif;
+            background: url('https://crichype.fun/assets/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
             color: white;
+        }
+        .container {
+            padding: 20px;
+        }
+        header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .video-container {
+            max-width: 800px;
+            margin: auto;
+        }
+        iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            flex-direction: column;
         }
-
-        /* Video player container */
-        #video-container {
-            position: relative;
-            width: 80%;
-            max-width: 800px;
-        }
-
-        video {
-            width: 100%;
-            border: 2px solid white;
-            border-radius: 10px;
-        }
-
-        /* Popup styling */
-        #popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .popup-content {
             background: white;
+            color: black;
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             border-radius: 10px;
             text-align: center;
-            z-index: 999;
-            display: none;
         }
-
-        #popup p {
-            color: black;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        #popup button {
-            margin: 5px;
-            padding: 10px;
+        .popup-content button {
+            margin: 10px;
+            padding: 10px 20px;
             border: none;
             cursor: pointer;
-            font-size: 14px;
-            border-radius: 5px;
-        }
-
-        #joinBtn {
-            background-color: green;
-            color: white;
-        }
-
-        #cancelBtn {
-            background-color: red;
-            color: white;
         }
     </style>
 </head>
 <body>
-
-    <!-- Video Player Container -->
-    <div id="video-container">
-        <video id="video" controls autoplay></video>
+    <div class="container">
+        <header>Live Match</header>
+        <main>
+            <div class="video-container">
+                <iframe id="livePlayer" src="https://v18tataplaysyndication.akamaized.net/bpk-tv/Sports18_1_HD_voot_MOB/output03/hdntl=exp=1742737928~acl=%2f*~data=hdntl~hmac=997439ed3aa23998094bf472b25ff9f25932e5a336ab2b96eb0ca41de41292a7/Sports18_1_HD_voot_MOB-audio_108038_eng=108000-video=2297600.m3u8" allowfullscreen></iframe>
+            </div>
+        </main>
     </div>
 
-    <!-- Popup Message -->
-    <div id="popup">
-        <p>Join @TheDealsMaster on Telegram</p>
-        <button id="joinBtn">OK</button>
-        <button id="cancelBtn">Cancel</button>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p>Join @TheDealsMaster on Telegram</p>
+            <button onclick="redirectToTelegram()">OK</button>
+            <button onclick="closePopup()">Cancel</button>
+        </div>
     </div>
 
     <script>
-        // Show popup on page load
+        function redirectToTelegram() {
+            window.location.href = "https://t.me/+owl9BPBR425hMzA1";
+        }
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
         window.onload = function() {
-            document.getElementById("popup").style.display = "block";
-
-            // Handle popup buttons
-            document.getElementById("joinBtn").onclick = function() {
-                window.location.href = "https://t.me/+owl9BPBR425hMzA1";
-            };
-            document.getElementById("cancelBtn").onclick = function() {
-                document.getElementById("popup").style.display = "none";
-            };
-
-            // Video streaming setup
-            var video = document.getElementById('video');
-            var videoSrc = "https://jcevents.akamaized.net/bpk-tv/JC_Sports18_1HD/JCHLS/hdntl=exp=1741585633~acl=%2F*~id=97ff5c734c6f4a3ea96b01cfd44846cc~data=hdntl~hmac=db0dbae6b8d53b386b4bc9848af7139235c4f2c36e1bc9ee44971a36249f2c20/JC_Sports18_1HD-audio_108038_eng=108000-video=2297600.m3u8";
-
-            if (Hls.isSupported()) {
-                var hls = new Hls();
-                hls.loadSource(videoSrc);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play();
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = videoSrc;
-                video.addEventListener('loadedmetadata', function() {
-                    video.play();
-                });
-            }
+            setTimeout(function() {
+                document.getElementById("popup").style.display = "flex";
+            }, 1000);
         };
     </script>
-
 </body>
 </html>
